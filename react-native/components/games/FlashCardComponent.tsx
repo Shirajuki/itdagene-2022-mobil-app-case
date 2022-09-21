@@ -5,18 +5,11 @@ import SwipeCards from "react-native-swipe-cards-deck";
 import { GameContext } from "../../context/GameContext";
 import { Employee } from "../../hooks/useFetchEmployees";
 import { FlashCard } from "../cards/FlashCard";
-import { Sound } from "expo-av/build/Audio/Sound";
-import { Audio, AVPlaybackStatus } from "expo-av";
 import { Loading } from "../status/Loading";
 
 type Props = {
 	setIsNormalPlay: (isNormalPlay: boolean) => void;
 };
-interface SoundInterface {
-	sound: Sound;
-	status: AVPlaybackStatus;
-	playAsync?: () => Promise<AVPlaybackStatus>;
-}
 export const FlashCardComponent: FC<Props> = ({ setIsNormalPlay }) => {
 	const { employees, learningArray, setLearningArray } =
 		useContext(GameContext);
@@ -39,19 +32,6 @@ export const FlashCardComponent: FC<Props> = ({ setIsNormalPlay }) => {
 		}
 		return true;
 	}
-
-	useEffect(() => {
-		async function playSound() {
-			const sound: SoundInterface = await Audio.Sound.createAsync(
-				require("../../assets/music/Monkeys-Spinning-Monkeys.mp3"),
-				{ shouldPlay: true }
-			);
-			if (sound.playAsync !== undefined) {
-				await sound.playAsync();
-			}
-		}
-		playSound().then((r) => console.log(r));
-	}, []);
 
 	return (
 		<>

@@ -1,5 +1,5 @@
 const msc = require("../assets/music/Lobby-Time.mp3");
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import Constants from "expo-constants";
 import { Wrapper } from "../components/layout/Wrapper";
@@ -11,9 +11,11 @@ import { Sound } from "expo-av/build/Audio/Sound";
 import { PlaySound } from "../utils/PlaySound";
 import { CurrentScoreContext } from "../context/currentscore/CurrentScoreContext";
 import asyncStorageService from "../services/asyncStorageService";
+import { GameContext } from "../context/GameContext";
 
 const wordleImg = require("../assets/images/homescreen/wordle_logo2.png");
 const bhImg = require("../assets/images/homescreen/behindBox_logo2.png");
+const questionImg = require("../assets/images/homescreen/question_logo2.png");
 const gbImg = require("../assets/images/homescreen/gibberish_logo2.png");
 const logo = require("../assets/images/homescreen/logo.png");
 
@@ -26,28 +28,44 @@ interface SoundInterface {
 export const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
 	const { setCurrentScore, setLeaderBoardScores } =
 		useContext(CurrentScoreContext);
+	const [sound, setSound] = useState<any>();
 
 	useEffect(() => {
 		const fetchScores = async () => {
 			const response = await asyncStorageService("GET");
-			setLeaderBoardScores(response);
+			setLeaderBoardScores(response ?? []);
 		};
 		fetchScores();
 	}, []);
 
 	// music
 	useEffect(() => {
+		console.log("Play Sound", setSound);
+		console.log(sound);
+
 		async function playSound() {
-			const sound: SoundInterface = await Audio.Sound.createAsync(
+			const { sound: nsound } = await Audio.Sound.createAsync(
 				require("../assets/music/Fluffing-a-Duck.mp3"),
-				{ shouldPlay: true }
+				{ shouldPlay: true, isLooping: true }
 			);
-			if (sound.playAsync !== undefined) {
-				await sound.playAsync();
-			}
+			setSound((sound: any) => {
+				if (sound) {
+					sound.stopAsync();
+					sound.unloadAsync();
+				}
+				return nsound;
+			});
+			await nsound.playAsync();
 		}
-		playSound().then((r) => console.log(r));
-	}, []);
+
+		playSound();
+		return sound
+			? () => {
+					console.log("Unloading Sound");
+					sound.unloadAsync();
+			  }
+			: undefined;
+	}, [setSound]);
 
 	const handlePress = (gameType: "W" | "B" | "G") => {
 		setCurrentScore(0);
@@ -61,10 +79,10 @@ export const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
 				<View style={styles.cardContainer}>
 					<GameCard
 						cardTitle="Random"
-						description="Moro med tilfeldighet"
+						imageURL={questionImg}
+						description="Tilfeldighet"
 						bgcolor="#ffc9c9"
 						onPress={() => handlePress("W")}
-						large={true}
 					/>
 					<GameCard
 						cardTitle="Nordle"

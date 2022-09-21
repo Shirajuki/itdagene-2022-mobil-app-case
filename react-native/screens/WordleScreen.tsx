@@ -37,25 +37,6 @@ import { GameMode } from "../models/gameStateEnum";
 import { RootStackScreenProps } from "../types";
 import parseFirstName from "../util/parseFirstName";
 
-const testData: Employee[] = [
-	{
-		name: "Robin Aleksander Finstad",
-		gender: "male",
-		originalUrl:
-			"https://itvemployeeimages.blob.core.windows.net/employees/Robin Aleksander Finstad.png?sp=r&st=2022-08-15T07:28:13Z&se=2023-01-01T16:28:13Z&spr=https&sv=2021-06-08&sr=c&sig=WShi5DW8MNleTPN0H5bs9vlhbzyabJgG45h0%2FLeNHvM%3D",
-		image:
-			"https://itvemployeeimages.blob.core.windows.net/employees/Robin Aleksander Finstad.png?sp=r&st=2022-08-15T07:28:13Z&se=2023-01-01T16:28:13Z&spr=https&sv=2021-06-08&sr=c&sig=WShi5DW8MNleTPN0H5bs9vlhbzyabJgG45h0%2FLeNHvM%3D",
-	},
-	{
-		name: "Praveen Kirubaharan",
-		gender: "male",
-		originalUrl:
-			"https://itvemployeeimages.blob.core.windows.net/employees/Praveen Kirubaharan.png?sp=r&st=2022-08-15T07:28:13Z&se=2023-01-01T16:28:13Z&spr=https&sv=2021-06-08&sr=c&sig=WShi5DW8MNleTPN0H5bs9vlhbzyabJgG45h0%2FLeNHvM%3D",
-		image:
-			"https://itvemployeeimages.blob.core.windows.net/employees/Praveen Kirubaharan.png?sp=r&st=2022-08-15T07:28:13Z&se=2023-01-01T16:28:13Z&spr=https&sv=2021-06-08&sr=c&sig=WShi5DW8MNleTPN0H5bs9vlhbzyabJgG45h0%2FLeNHvM%3D",
-	},
-];
-
 interface SoundInterface {
 	sound: Sound;
 	status: AVPlaybackStatus;
@@ -277,8 +258,8 @@ const WordleInner: FC<{ employee: Employee; handleNext: () => void }> = ({
 		image: {
 			position: "absolute",
 			marginTop: 16,
-			width: WIDTH,
-			height: WIDTH * 1.15,
+			width: WIDTH * 0.9,
+			height: WIDTH * 1.15 * 0.9,
 			borderRadius: 12,
 			zIndex: 1,
 		},
@@ -359,13 +340,12 @@ const WordleInner: FC<{ employee: Employee; handleNext: () => void }> = ({
 					setGuess={setGuess}
 					guess={guess}
 				/>
-				<View
+				<SafeAreaView
 					style={{
 						flexDirection: "row",
 						justifyContent: "space-between",
-						padding: 10,
 						backgroundColor: "#FFD4BE",
-						borderRadius: 12,
+						borderRadius: 8,
 						shadowColor: "#000",
 						shadowOffset: {
 							width: 0,
@@ -373,12 +353,23 @@ const WordleInner: FC<{ employee: Employee; handleNext: () => void }> = ({
 						},
 						shadowOpacity: 0.25,
 						shadowRadius: 3.84,
-						width: "80%",
+						width: "90%",
+						minHeight: 30,
 					}}
 				>
-					<PriceCounter />
-					<Health health={health} />
-				</View>
+					<View
+						style={{
+							flexDirection: "row",
+							justifyContent: "space-between",
+							padding: 12,
+							minHeight: 30,
+							width: "100%",
+						}}
+					>
+						<PriceCounter />
+						<Health health={health} />
+					</View>
+				</SafeAreaView>
 			</View>
 		</>
 	);
@@ -405,23 +396,10 @@ const WordleScreen = () => {
 
 	if (!employee || !employees || !learningArray) return <Loading />;
 
-	useEffect(() => {
-		async function playSound() {
-			const sound: SoundInterface = await Audio.Sound.createAsync(
-				require("../assets/music/Lobby-Time.mp3"),
-				{ shouldPlay: true }
-			);
-			if (sound.playAsync !== undefined) {
-				await sound.playAsync();
-			}
-		}
-		playSound().then((r) => console.log(r));
-	}, []);
-
 	return (
-		<View>
+		<SafeAreaView>
 			<WordleInner employee={employee} handleNext={handleNext} />
-		</View>
+		</SafeAreaView>
 	);
 };
 
@@ -450,7 +428,7 @@ const styles = StyleSheet.create({
 
 	// Keyboard
 	keyboardWrapper: {
-		height: "50%",
+		height: "45%",
 		justifyContent: "space-around",
 		alignItems: "center",
 	},
