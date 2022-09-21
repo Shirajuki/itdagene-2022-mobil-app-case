@@ -13,6 +13,7 @@ export default function GameProvider({ children }: gameModeProviderProps) {
     const [gameMode, setGameMode] = useState<GameMode>(GameMode.practice);
     const [evaluationArray, setEvaluationArray] = useState<Employee[]>([]);
     const [learningArray, setLearningArray] = useState<Employee[]>([]);
+    const [sound, setSound] = useState<any>();
 
     // const {employees} = useFetchEmployees()
 
@@ -23,7 +24,9 @@ export default function GameProvider({ children }: gameModeProviderProps) {
         employees: evaluationArray, 
         setEmployees: setEvaluationArray,
         learningArray: learningArray, 
-        setLearningArray: setLearningArray
+        setLearningArray: setLearningArray,
+        sound: sound,
+        setSound: setSound
     });
 
     // const updateContext = useCallback(() => {
