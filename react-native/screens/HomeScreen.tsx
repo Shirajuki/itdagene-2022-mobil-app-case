@@ -21,7 +21,7 @@ export const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
 		const fetchScores = async () => {
 			const response = await asyncStorageService("GET");
 			console.log(response===undefined);
-			setLeaderBoardScores(response);
+			setLeaderBoardScores(response || []);
 		};
 		fetchScores();
 	}, []);
