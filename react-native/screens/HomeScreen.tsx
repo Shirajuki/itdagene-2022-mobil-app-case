@@ -1,30 +1,18 @@
-const msc = require("../assets/music/Lobby-Time.mp3");
 import React, { useContext, useEffect, useState } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, Platform, SafeAreaView, StyleSheet, View } from "react-native";
 import Constants from "expo-constants";
-import { Wrapper } from "../components/layout/Wrapper";
 import { RootTabScreenProps } from "../types";
-import { Audio, AVPlaybackStatus } from "expo-av";
+import { Audio } from "expo-av";
 import GameCard from "../components/HomeScreen/GameCard";
 import GameModeToggleSwitch from "../components/gamemodetoggle";
-import { Sound } from "expo-av/build/Audio/Sound";
-import { PlaySound } from "../utils/PlaySound";
 import { CurrentScoreContext } from "../context/currentscore/CurrentScoreContext";
 import asyncStorageService from "../services/asyncStorageService";
-import { GameContext } from "../context/GameContext";
 
 const wordleImg = require("../assets/images/homescreen/wordle_logo2.png");
 const bhImg = require("../assets/images/homescreen/behindBox_logo2.png");
 const questionImg = require("../assets/images/homescreen/question_logo2.png");
 const gbImg = require("../assets/images/homescreen/gibberish_logo2.png");
 const logo = require("../assets/images/homescreen/logo.png");
-
-interface SoundInterface {
-	sound: Sound;
-	status: AVPlaybackStatus;
-	playAsync?: () => Promise<AVPlaybackStatus>;
-	unloadAsync?: () => Promise<AVPlaybackStatus>;
-}
 
 export const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
 	const { setCurrentScore, setLeaderBoardScores } =
@@ -41,9 +29,6 @@ export const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
 
 	// music
 	useEffect(() => {
-		console.log("Play Sound", setSound);
-		console.log(sound);
-
 		async function playSound() {
 			const { sound: nsound } = await Audio.Sound.createAsync(
 				require("../assets/music/Fluffing-a-Duck.mp3"),
@@ -75,13 +60,10 @@ export const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
 
 	const styles = StyleSheet.create({
 		container: {
-			display: "flex",
-			height: "100%",
-			width: "100%",
-			flexDirection: "column",
 			alignItems: "center",
-			justifyContent: "space-evenly",
-			paddingTop: Constants.statusBarHeight,
+			justifyContent: "space-around",
+			flex: 1,
+			paddingTop: Platform.OS === 'android' ? 52 : 0,
 		},
 		logo: {
 			alignItems: "center",
@@ -95,44 +77,40 @@ export const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
 	});
 
 	return (
-		<Wrapper>
-			<View style={styles.container}>
-				<Image resizeMode="contain" source={logo} style={styles.logo} />
-				<View style={styles.cardContainer}>
-					<GameCard
-						cardTitle="Random"
-						imageURL={questionImg}
-						description="Tilfeldighet"
-						bgcolor="#ffc9c9"
-						onPress={() => handlePress("W")}
-					/>
-					<GameCard
-						cardTitle="Nordle"
-						imageURL={wordleImg}
-						description="Navn med wordle"
-						bgcolor="#FFD4BE"
-						onPress={() => handlePress("W")}
-					/>
-					<GameCard
-						cardTitle="Behind Box"
-						imageURL={bhImg}
-						description="Dekket med bokser"
-						bgcolor="#F9F871"
-						onPress={() => handlePress("B")}
-					/>
-					<GameCard
-						cardTitle="Gibberish"
-						imageURL={gbImg}
-						description="Rangerte bokstaver"
-						bgcolor="lightblue"
-						onPress={() => handlePress("G")}
-					/>
-				</View>
-				<View>
-					<GameModeToggleSwitch />
-				</View>
+		<SafeAreaView style={styles.container}>
+			<Image resizeMode="contain" source={logo} style={styles.logo} />
+			<View style={styles.cardContainer}>
+				<GameCard
+					cardTitle="Random"
+					imageURL={questionImg}
+					description="Tilfeldighet"
+					bgcolor="#ffc9c9"
+					onPress={() => handlePress("W")}
+				/>
+				<GameCard
+					cardTitle="Nordle"
+					imageURL={wordleImg}
+					description="Navn med wordle"
+					bgcolor="#FFD4BE"
+					onPress={() => handlePress("W")}
+				/>
+				<GameCard
+					cardTitle="Behind Box"
+					imageURL={bhImg}
+					description="Dekket med bokser"
+					bgcolor="#F9F871"
+					onPress={() => handlePress("B")}
+				/>
+				<GameCard
+					cardTitle="Gibberish"
+					imageURL={gbImg}
+					description="Rangerte bokstaver"
+					bgcolor="lightblue"
+					onPress={() => handlePress("G")}
+				/>
 			</View>
-		</Wrapper>
+			<GameModeToggleSwitch />
+		</SafeAreaView>
 	);
 };
 

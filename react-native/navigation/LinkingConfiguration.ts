@@ -25,11 +25,6 @@ const linking: LinkingOptions<RootStackParamList> = {
               LeaderBoardScreen: 'leaderBoard',
             },
           },
-          UserSettings: {
-            screens: {
-              UserSettingsScreen: 'userSettings',
-            },
-          },
         },
       },
       Game: 'game',

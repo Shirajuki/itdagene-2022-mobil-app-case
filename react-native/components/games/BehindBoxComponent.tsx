@@ -128,33 +128,34 @@ const BehindBoxComponent = ({ employee, handleNext }: Props) => {
 
 	if (employee !== undefined) {
 		return (
-			<KeyboardAvoidingView style={{ alignItems: "center" }} behavior="padding">
-				<Title
-					style={{
-						textAlign: "center",
-						fontSize: 36,
-						paddingTop: 10,
-						width: "100%",
-						marginLeft: "auto",
-						marginRight: "auto",
-					}}
-				>
-					Hvem er bak boksen?
-				</Title>
-				<Paragraph
-					style={{
-						width: "75%",
-						textAlign: "center",
-						marginLeft: "auto",
-						marginRight: "auto",
-						fontSize: 12,
-					}}
-				>
-					En luke fjerner seg hvert 10. sekund. Jo raskere du finner navnet, jo
-					fler poeng!
-				</Paragraph>
+			<View style={{ alignItems: "center", flex: 1, marginTop: 8 }}>
+				<KeyboardAvoidingView behavior="padding">
+					<Title
+						style={{
+							textAlign: "center",
+							fontSize: 36,
+							paddingTop: 8,
+							maxWidth: "90%",
+							marginLeft: "auto",
+							marginRight: "auto",
+						}}
+					>
+						Hvem er bak boksen?
+					</Title>
+					<Paragraph
+						style={{
+							maxWidth: "80%",
+							textAlign: "center",
+							marginLeft: "auto",
+							marginRight: "auto",
+							fontSize: 12,
+						}}
+					>
+						En luke fjerner seg hvert 10. sekund. Jo raskere du finner navnet, jo
+						fler poeng!
+					</Paragraph>
 				<Text>{employeeName}</Text>
-				<View style={{ height: "50%", marginTop: 8 }}>
+				<View style={{ height: "50%", marginTop: 8, zIndex: 0 }}>
 					<Image
 						source={{ uri: employee?.image }}
 						style={{
@@ -259,7 +260,7 @@ const BehindBoxComponent = ({ employee, handleNext }: Props) => {
 						/>
 					</View>
 				</View>
-				<View style={{ height: "50%", marginTop: 16 }}>
+				<View style={{ height: "50%", marginTop: 16, zIndex: 1 }}>
 					<>
 						<TextInput
 							label="Ditt svar"
@@ -276,39 +277,38 @@ const BehindBoxComponent = ({ employee, handleNext }: Props) => {
 							{isCorrect ? "Riktig svar!" : ""}
 						</Paragraph>
 					</>
-					<SafeAreaView>
-						<View
+					<View 
+						style={{
+							flexDirection: "row",
+							justifyContent: "center",
+							marginTop: 16,
+							padding: 10,
+							backgroundColor: "#FFD4BE",
+							borderRadius: 12,
+							shadowColor: "#000",
+							shadowOffset: {
+								width: 0,
+								height: 2,
+							},
+							shadowOpacity: 0.25,
+							shadowRadius: 3.84,
+							minWidth: "80%",
+						}}
+					>
+						<Text
 							style={{
-								flexDirection: "row",
-								justifyContent: "center",
-								marginTop: 16,
-								padding: 10,
-								backgroundColor: "#FFD4BE",
-								borderRadius: 12,
-								shadowColor: "#000",
-								shadowOffset: {
-									width: 0,
-									height: 2,
-								},
-								shadowOpacity: 0.25,
-								shadowRadius: 3.84,
-								minWidth: "80%",
+								fontSize: 20,
+								fontWeight: "500",
+								textAlign: "center",
+								color: "#BE185D",
 							}}
 						>
-							<Text
-								style={{
-									fontSize: 20,
-									fontWeight: "500",
-									textAlign: "center",
-									color: "#BE185D",
-								}}
-							>
-								Antall poeng: {currentScore}
-							</Text>
-						</View>
-					</SafeAreaView>
+							Antall poeng: {currentScore}
+						</Text>
+					</View>
 				</View>
-			</KeyboardAvoidingView>
+				</KeyboardAvoidingView>
+			</View>
 		);
 	} else {
 		return <Loading />;

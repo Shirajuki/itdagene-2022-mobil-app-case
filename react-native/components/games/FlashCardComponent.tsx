@@ -1,4 +1,5 @@
 import { FC, useContext, useEffect, useRef } from "react";
+import { View } from "react-native";
 import { Paragraph, Title } from "react-native-paper";
 // @ts-ignore
 import SwipeCards from "react-native-swipe-cards-deck";
@@ -34,22 +35,23 @@ export const FlashCardComponent: FC<Props> = ({ setIsNormalPlay }) => {
 	}
 
 	return (
-		<>
+		<View>
 			<Title
 				style={{
 					textAlign: "center",
 					fontSize: 36,
-					paddingTop: 20,
-					width: "100%",
+					paddingTop: 8,
+					maxWidth: "80%",
 					marginLeft: "auto",
 					marginRight: "auto",
+					marginTop: 16
 				}}
 			>
 				Lær deg navnene først!
 			</Title>
 			<Paragraph
 				style={{
-					width: "75%",
+					maxWidth: "75%",
 					textAlign: "center",
 					marginLeft: "auto",
 					marginRight: "auto",
@@ -91,6 +93,6 @@ export const FlashCardComponent: FC<Props> = ({ setIsNormalPlay }) => {
 					},
 				}}
 			/>
-		</>
+		</View>
 	);
 };

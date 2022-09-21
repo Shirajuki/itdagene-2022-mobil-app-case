@@ -100,8 +100,7 @@ const WordleDisplay = ({ guesses, name, guess, tries }: IWordleStats) => {
 	const charStatuses = getStatusesDisplay(name, guesses);
 
 	return (
-		<SafeAreaView>
-			<View>
+			<View style={{zIndex: 0}}>
 				{new Array(tries).fill(0).map((_, i) => {
 					return (
 						<View key={i} style={styles.guessRow}>
@@ -133,7 +132,6 @@ const WordleDisplay = ({ guesses, name, guess, tries }: IWordleStats) => {
 					);
 				})}
 			</View>
-		</SafeAreaView>
 	);
 };
 
@@ -255,7 +253,7 @@ const WordleInner: FC<{ employee: Employee; handleNext: () => void }> = ({
 			width: WIDTH * 0.9,
 			height: WIDTH * 1.15 * 0.9,
 			borderRadius: 12,
-			zIndex: 1,
+			zIndex: 2,
 		},
 	});
 
@@ -300,7 +298,7 @@ const WordleInner: FC<{ employee: Employee; handleNext: () => void }> = ({
 	const tries = 6;
 
 	return (
-		<>
+		<View>
 			<View style={styles.game}>
 				<Animated.View
 					entering={FadeIn}
@@ -365,7 +363,7 @@ const WordleInner: FC<{ employee: Employee; handleNext: () => void }> = ({
 					</View>
 				</SafeAreaView>
 			</View>
-		</>
+		</View>
 	);
 };
 
@@ -391,7 +389,7 @@ const WordleScreen = () => {
 	if (!employee || !employees || !learningArray) return <Loading />;
 
 	return (
-		<SafeAreaView>
+		<SafeAreaView style={{flex: 1, paddingBottom: 8}}>
 			<WordleInner employee={employee} handleNext={handleNext} />
 		</SafeAreaView>
 	);
@@ -402,6 +400,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		height: "50%",
+		marginTop: 8,
 	},
 
 	// Switch
@@ -422,11 +421,11 @@ const styles = StyleSheet.create({
 
 	// Keyboard
 	keyboardWrapper: {
-		height: "45%",
+		height: "50%",
 		justifyContent: "space-around",
 		alignItems: "center",
 	},
-	keyboard: { flexDirection: "column", marginTop: 10 },
+	keyboard: { flexDirection: "column" },
 	keyboardRow: {
 		flexDirection: "row",
 		justifyContent: "center",
