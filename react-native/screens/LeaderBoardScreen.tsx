@@ -3,6 +3,7 @@ import React, { useContext } from "react";
 import { Text, View, Dimensions, Image, StyleSheet, ScrollView } from "react-native";
 import { Title } from "react-native-paper";
 import { Wrapper } from "../components/layout/Wrapper";
+import { Loading } from "../components/status/Loading";
 import { CurrentScoreContext } from "../context/currentscore/CurrentScoreContext";
 
 import { RootTabScreenProps } from "../types";
@@ -29,7 +30,7 @@ export const LeaderBoard = ({
 			</View>
 		);
 	};
-
+	if(!leaderBoardScores) return <Loading/>;
 	return (
 		<Wrapper>
 			<View style={styles.title}>

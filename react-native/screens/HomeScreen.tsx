@@ -20,6 +20,7 @@ export const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
 	useEffect(() => {
 		const fetchScores = async () => {
 			const response = await asyncStorageService("GET");
+			console.log(response===undefined);
 			setLeaderBoardScores(response);
 		};
 		fetchScores();
