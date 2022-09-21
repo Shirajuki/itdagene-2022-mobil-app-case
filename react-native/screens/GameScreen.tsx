@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Text } from "react-native";
+import { Platform, SafeAreaView, Text, View } from "react-native";
 import { FlashCardComponent } from "../components/games/FlashCardComponent";
 import Header from "../components/layout/Header";
 import { Wrapper } from "../components/layout/Wrapper";
@@ -19,6 +19,8 @@ export const GameScreen = ({ route: { params: { gameType }} }: RootStackScreenPr
     const [isNormalPlay, setIsNormalPlay] = useState<boolean>(false);
     const {gameMode, setEmployees, setLearningArray} = useContext(GameContext);
     const {loading, employees} = useFetchEmployees();
+
+    const isContentReady = loading || !employees;
 
     const {currentScore, setLeaderBoardScores} = useContext(CurrentScoreContext);
 
@@ -60,11 +62,18 @@ export const GameScreen = ({ route: { params: { gameType }} }: RootStackScreenPr
 	}
 
     return (
-        <Wrapper>
+        <SafeAreaView 
+            style={{
+                alignItems: "center",
+                justifyContent: "space-around",
+                flex: 1,
+                paddingTop: Platform.OS === 'android' ? 52 : 0,
+            }}
+        >
             <Header callback={backCallback}/>
-            {loading && <Loading />}
+            {(loading || !employees ) && <Loading />}
             {!isNormalPlay && employees && <FlashCardComponent setIsNormalPlay={setIsNormalPlay} />}
             {isNormalPlay && getContent()}
-        </Wrapper>
+        </SafeAreaView>
     );
 };

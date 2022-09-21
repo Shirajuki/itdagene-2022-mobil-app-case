@@ -1,8 +1,16 @@
 import Constants from "expo-constants";
 import React, { useContext } from "react";
-import { Text, View, Dimensions, Image, StyleSheet, ScrollView } from "react-native";
+import {
+	Text,
+	View,
+	Dimensions,
+	Image,
+	StyleSheet,
+	ScrollView,
+} from "react-native";
 import { Title } from "react-native-paper";
 import { Wrapper } from "../components/layout/Wrapper";
+import { Loading } from "../components/status/Loading";
 import { CurrentScoreContext } from "../context/currentscore/CurrentScoreContext";
 
 import { RootTabScreenProps } from "../types";
@@ -18,7 +26,7 @@ interface IScoreBox {
 export const LeaderBoard = ({
 	navigation,
 }: RootTabScreenProps<"LeaderBoard">) => {
-	const {leaderBoardScores} = useContext(CurrentScoreContext);
+	const { leaderBoardScores } = useContext(CurrentScoreContext);
 
 	const ScoreBox = ({ score, index, game }: IScoreBox) => {
 		return (
@@ -29,6 +37,8 @@ export const LeaderBoard = ({
 			</View>
 		);
 	};
+
+	if (!leaderBoardScores) return <Loading />;
 
 	return (
 		<Wrapper>
@@ -44,17 +54,20 @@ export const LeaderBoard = ({
 				<Title>Poengtavle</Title>
 			</View>
 
-			<ScrollView style={{marginBottom: 25}}>
+			<ScrollView style={{ marginBottom: 25 }}>
 				<View style={styles.wrapper}>
-					{sortArrayByScore(removeDuplicates(leaderBoardScores)).map((score, index) => (
-						<ScoreBox
-							key={index}
-							score={score.score}
-							index={index + 1}
-							game={score.game}
-						/>
-					))}
+					{sortArrayByScore(removeDuplicates(leaderBoardScores)).map(
+						(score, index) => (
+							<ScoreBox
+								key={index}
+								score={score.score}
+								index={index + 1}
+								game={score.game}
+							/>
+						)
+					)}
 				</View>
+				{leaderBoardScores.length === 0 && (<Text style={{ textAlign: "center",fontSize:25, fontWeight:"300" }}>Du har ikke spilt noe ennå</Text>)}
 			</ScrollView>
 		</Wrapper>
 	);

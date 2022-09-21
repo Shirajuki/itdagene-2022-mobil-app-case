@@ -26,12 +26,10 @@ const BehindBoxScreen = () => {
 	};
     
     return (
-        <View>
-            <BehindBoxComponent 
-                employee={gameArray[currentIndex]} 
-                handleNext={handleNext}
-            />
-        </View>
+        <BehindBoxComponent 
+            employee={gameArray[currentIndex]} 
+            handleNext={handleNext}
+        />
     )
 };
 

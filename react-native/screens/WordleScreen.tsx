@@ -31,28 +31,11 @@ import { CurrentScoreContext } from "../context/currentscore/CurrentScoreContext
 import { GameContext } from "../context/GameContext";
 import { Employee } from "../hooks/useFetchEmployees";
 import { getStatuses, getStatusesDisplay, CharStatus } from "../lib/statuses";
+import { Audio, AVPlaybackStatus } from "expo-av";
+import { Sound } from "expo-av/build/Audio/Sound";
 import { GameMode } from "../models/gameStateEnum";
 import { RootStackScreenProps } from "../types";
 import parseFirstName from "../util/parseFirstName";
-
-const testData: Employee[] = [
-	{
-		name: "Robin Aleksander Finstad",
-		gender: "male",
-		originalUrl:
-			"https://itvemployeeimages.blob.core.windows.net/employees/Robin Aleksander Finstad.png?sp=r&st=2022-08-15T07:28:13Z&se=2023-01-01T16:28:13Z&spr=https&sv=2021-06-08&sr=c&sig=WShi5DW8MNleTPN0H5bs9vlhbzyabJgG45h0%2FLeNHvM%3D",
-		image:
-			"https://itvemployeeimages.blob.core.windows.net/employees/Robin Aleksander Finstad.png?sp=r&st=2022-08-15T07:28:13Z&se=2023-01-01T16:28:13Z&spr=https&sv=2021-06-08&sr=c&sig=WShi5DW8MNleTPN0H5bs9vlhbzyabJgG45h0%2FLeNHvM%3D",
-	},
-	{
-		name: "Praveen Kirubaharan",
-		gender: "male",
-		originalUrl:
-			"https://itvemployeeimages.blob.core.windows.net/employees/Praveen Kirubaharan.png?sp=r&st=2022-08-15T07:28:13Z&se=2023-01-01T16:28:13Z&spr=https&sv=2021-06-08&sr=c&sig=WShi5DW8MNleTPN0H5bs9vlhbzyabJgG45h0%2FLeNHvM%3D",
-		image:
-			"https://itvemployeeimages.blob.core.windows.net/employees/Praveen Kirubaharan.png?sp=r&st=2022-08-15T07:28:13Z&se=2023-01-01T16:28:13Z&spr=https&sv=2021-06-08&sr=c&sig=WShi5DW8MNleTPN0H5bs9vlhbzyabJgG45h0%2FLeNHvM%3D",
-	},
-];
 
 interface IWordleStats {
 	guesses: string[];
@@ -117,8 +100,7 @@ const WordleDisplay = ({ guesses, name, guess, tries }: IWordleStats) => {
 	const charStatuses = getStatusesDisplay(name, guesses);
 
 	return (
-		<SafeAreaView>
-			<View>
+			<View style={{zIndex: 0}}>
 				{new Array(tries).fill(0).map((_, i) => {
 					return (
 						<View key={i} style={styles.guessRow}>
@@ -150,7 +132,6 @@ const WordleDisplay = ({ guesses, name, guess, tries }: IWordleStats) => {
 					);
 				})}
 			</View>
-		</SafeAreaView>
 	);
 };
 
@@ -241,15 +222,19 @@ const WordleKeyboard = ({
 	);
 };
 
-const WordleInner: FC<{employee: Employee, handleNext: () => void}> = ({employee, handleNext}) => {
+const WordleInner: FC<{ employee: Employee; handleNext: () => void }> = ({
+	employee,
+	handleNext,
+}) => {
 	const [guesses, setGuesses] = useState<string[]>([]);
 	const [guess, setGuess] = useState<string>("");
 	const [isSwitchOn, setIsSwitchOn] = useState(true);
 	const [health, setHealth] = useState<number>(3);
 
-	const {currentScore, setCurrentScore} = useContext(CurrentScoreContext);
+	const { currentScore, setCurrentScore } = useContext(CurrentScoreContext);
 
-	const navigation = useNavigation<RootStackScreenProps<"Game">['navigation']>();
+	const navigation =
+		useNavigation<RootStackScreenProps<"Game">["navigation"]>();
 
 	const firstName = parseFirstName(employee.name);
 
@@ -265,10 +250,10 @@ const WordleInner: FC<{employee: Employee, handleNext: () => void}> = ({employee
 		image: {
 			position: "absolute",
 			marginTop: 16,
-			width: WIDTH,
-			height: WIDTH * 1.15,
+			width: WIDTH * 0.9,
+			height: WIDTH * 1.15 * 0.9,
 			borderRadius: 12,
-			zIndex: 1,
+			zIndex: 2,
 		},
 	});
 
@@ -293,7 +278,7 @@ const WordleInner: FC<{employee: Employee, handleNext: () => void}> = ({employee
 				setGuesses([]);
 				if (health > 1) {
 					setHealth((wasHealth) => wasHealth - 1);
-				} 
+				}
 				if (health === 1) {
 					navigation.goBack();
 				}
@@ -313,79 +298,86 @@ const WordleInner: FC<{employee: Employee, handleNext: () => void}> = ({employee
 	const tries = 6;
 
 	return (
-		<>
-		<View style={styles.game}>
-			<Animated.View
-				entering={FadeIn}
-				style={[innerStyles.image, animatedStyles]}
-			>
-				<Text>{firstName}</Text>
-				<Image
-					source={{ uri: employee.image }}
-					style={innerStyles.image}
-				/>
-			</Animated.View>
-			<WordleDisplay
-				guesses={guesses}
-				name={firstName}
-				guess={guess}
-				tries={tries}
-			/>
-		</View>
-		<View style={styles.keyboardWrapper}>
-			<View style={styles.switch}>
-				<Text style={{fontWeight: "500"}}>Vis bilde</Text>
-				<Switch 
-					value={isSwitchOn} 
-					onValueChange={onToggleSwitch} 
-					trackColor={{ false: "#767577", true: "#BE185D" }}
-          			thumbColor={isSwitchOn ? "#ffffff" : "#f4f3f4"}
-          			ios_backgroundColor="#3e3e3e"
+		<View>
+			<View style={styles.game}>
+				<Animated.View
+					entering={FadeIn}
+					style={[innerStyles.image, animatedStyles]}
+				>
+					<Text>{firstName}</Text>
+					<Image source={{ uri: employee.image }} style={innerStyles.image} />
+				</Animated.View>
+				<WordleDisplay
+					guesses={guesses}
+					name={firstName}
+					guess={guess}
+					tries={tries}
 				/>
 			</View>
-			<WordleKeyboard
-				guesses={guesses}
-				name={firstName}
-				onCallback={guessCallback}
-				setGuess={setGuess}
-				guess={guess}
-			/>
-			<View 
-			style={{
-				flexDirection: "row",
-				justifyContent: "space-between",
-				padding: 10,
-				backgroundColor: "#FFD4BE",
-				borderRadius: 12,
-				shadowColor: "#000",
-				shadowOffset: {
-					width: 0,
-					height: 2,
-				},
-				shadowOpacity: 0.25,
-				shadowRadius: 3.84,
-				width: "80%",
-        	}}
-		>
-          <PriceCounter />
-          <Health health={health} />
-        </View>
+			<View style={styles.keyboardWrapper}>
+				<View style={styles.switch}>
+					<Text style={{ fontWeight: "500" }}>Vis bilde</Text>
+					<Switch
+						value={isSwitchOn}
+						onValueChange={onToggleSwitch}
+						trackColor={{ false: "#767577", true: "#BE185D" }}
+						thumbColor={isSwitchOn ? "#ffffff" : "#f4f3f4"}
+						ios_backgroundColor="#3e3e3e"
+					/>
+				</View>
+				<WordleKeyboard
+					guesses={guesses}
+					name={firstName}
+					onCallback={guessCallback}
+					setGuess={setGuess}
+					guess={guess}
+				/>
+				<SafeAreaView
+					style={{
+						flexDirection: "row",
+						justifyContent: "space-between",
+						backgroundColor: "#FFD4BE",
+						borderRadius: 8,
+						shadowColor: "#000",
+						shadowOffset: {
+							width: 0,
+							height: 2,
+						},
+						shadowOpacity: 0.25,
+						shadowRadius: 3.84,
+						width: "90%",
+						minHeight: 30,
+					}}
+				>
+					<View
+						style={{
+							flexDirection: "row",
+							justifyContent: "space-between",
+							padding: 12,
+							minHeight: 30,
+							width: "100%",
+						}}
+					>
+						<PriceCounter />
+						<Health health={health} />
+					</View>
+				</SafeAreaView>
+			</View>
 		</View>
-		
-		</>
 	);
 };
 
 const WordleScreen = () => {
-	const navigation = useNavigation<RootStackScreenProps<"Game">['navigation']>();
-	
+	const navigation =
+		useNavigation<RootStackScreenProps<"Game">["navigation"]>();
+
 	let { employees, gameMode, learningArray } = useContext(GameContext);
 	const gameArray = gameMode === GameMode.practice ? learningArray : employees;
 
-	const[currentIndex, setCurrentIndex] = useState<number>(0);
+	const [currentIndex, setCurrentIndex] = useState<number>(0);
 
 	const employee = gameArray[currentIndex];
-	
+
 	const handleNext = () => {
 		if (currentIndex < gameArray.length - 1) {
 			setCurrentIndex((currentIndex) => currentIndex + 1);
@@ -397,9 +389,9 @@ const WordleScreen = () => {
 	if (!employee || !employees || !learningArray) return <Loading />;
 
 	return (
-		<View>
+		<SafeAreaView style={{flex: 1, paddingBottom: 8}}>
 			<WordleInner employee={employee} handleNext={handleNext} />
-		</View>
+		</SafeAreaView>
 	);
 };
 
@@ -408,6 +400,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		height: "50%",
+		marginTop: 8,
 	},
 
 	// Switch
@@ -432,7 +425,7 @@ const styles = StyleSheet.create({
 		justifyContent: "space-around",
 		alignItems: "center",
 	},
-	keyboard: { flexDirection: "column", marginTop: 10 },
+	keyboard: { flexDirection: "column" },
 	keyboardRow: {
 		flexDirection: "row",
 		justifyContent: "center",

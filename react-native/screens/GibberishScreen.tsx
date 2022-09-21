@@ -6,7 +6,7 @@ import {
   Text,
   Image,
   KeyboardAvoidingView,
-
+  SafeAreaView,
 } from "react-native";
 import { Paragraph, Title } from "react-native-paper";
 import GibberishLetterInput from "../components/gibbershletterinput";
@@ -121,58 +121,62 @@ export const GibberishScreen = () => {
 
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <View style={{height: "50%", width: "100%", justifyContent: "center", alignItems: "center"}}>
-        <Title style={{textAlign: "center", fontSize: 36, paddingTop: 10, width: "100%", marginLeft: "auto", marginRight: "auto"}}>Hvem er dette?</Title>
-        <Paragraph style={{ width: "75%", textAlign: "center", marginLeft: "auto", marginRight: "auto", fontSize: 12}}>Bak gibberishen finner du navnet til personen på bildet.</Paragraph>
-        <Image
-          style={styles.image}
-          key={currentEmployee.name}
-          source={{ uri: currentEmployee.image }}
-          resizeMode="cover"
-        />
-        <Text style={styles.title}>{shuffledName}</Text>
-      </View>
-      <View style={{height: "50%", width: "100%", justifyContent: "space-between", alignItems: "center", paddingBottom: 20}}>
-        <View style={{ flexDirection: "row" }}>
-          {firstName.split("").map((letter, index) => {
-            return (
-    <GibberishLetterInput
-        letterIndex={index}
-        addToUserInputDict={addToUserInputDict}
-        key={index} currentNameSize={0} 
-        size={focusIndex}
-        newEmployee={newEployeeInput}/>
-            );
-          })}
+    <View style={{flex: 1}}>
+      <KeyboardAvoidingView behavior="padding">
+        <View style={{minHeight: "50%", width: "100%", justifyContent: "center", alignItems: "center"}}>
+          <Title style={{textAlign: "center", fontSize: 36, paddingTop: 10, width: "100%", marginLeft: "auto", marginRight: "auto"}}>Hvem er dette?</Title>
+          <Paragraph style={{ width: "75%", textAlign: "center", marginLeft: "auto", marginRight: "auto", fontSize: 12}}>Bak gibberishen finner du navnet til personen på bildet.</Paragraph>
+          <Image
+            style={styles.image}
+            key={currentEmployee.name}
+            source={{ uri: currentEmployee.image }}
+            resizeMode="cover"
+          />
+          <Text style={{fontSize: 12}}>{currentEmployee.name}</Text>
+          <Text style={styles.title}>{shuffledName}</Text>
         </View>
-        <View style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginTop: 16,
-          padding: 10,
-          backgroundColor: "#FFD4BE",
-          borderRadius: 12,
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-          width: "100%",
-        }}>
-          <PriceCounter />
-          <Health health={health} />
+        <View style={{minHeight: "40%", width: "100%", justifyContent: "space-around", alignItems: "center"}}>
+          <View style={{ flexDirection: "row" }}>
+            {firstName.split("").map((letter, index) => {
+              return (
+                <GibberishLetterInput
+                letterIndex={index}
+                addToUserInputDict={addToUserInputDict}
+                key={index} currentNameSize={0} 
+                size={focusIndex}
+                newEmployee={newEployeeInput}/>
+                
+              );
+            })}
+          </View>
+          <View style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginTop: 16,
+            padding: 10,
+            backgroundColor: "#FFD4BE",
+            borderRadius: 12,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            width: "80%",
+          }}>
+            <PriceCounter />
+            <Health health={health} />
+          </View>
         </View>
-      </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: 16,
   },
   title: {
     fontSize: 30,

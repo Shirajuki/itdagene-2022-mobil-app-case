@@ -60,25 +60,6 @@ function BottomTabNavigator() {
 			initialRouteName="Home"
 			screenOptions={{
 				headerShown: false,
-				tabBarBackground: () => (
-					<Image
-						source={require("../assets/images/curve.png")}
-						resizeMode="contain"
-						style={{
-							position: "absolute",
-							bottom: 0,
-							left: 0,
-							width: Dimensions.get("window").width,
-							shadowColor: "#000",
-							shadowOffset: {
-								width: 0,
-								height: -3,
-							},
-							shadowOpacity: 0.47,
-							shadowRadius: 1.65,
-						}}
-					/>
-				),
 				tabBarShowLabel: false,
 				tabBarStyle: {
 					borderWidth: 0,
@@ -89,18 +70,6 @@ function BottomTabNavigator() {
 				},
 			}}
 		>
-			{/* <BottomTab.Screen
-				name="UserSettings"
-				component={UserSettingsScreen}
-				options={{
-					tabBarIcon: ({ focused }) => (
-						<TabBarIcon
-							name="user"
-							color={focused ? Colors.active : Colors.notSelected}
-						/>
-					),
-				}}
-			/> */}
 			<BottomTab.Screen
 				name="Home"
 				component={HomeScreen}
