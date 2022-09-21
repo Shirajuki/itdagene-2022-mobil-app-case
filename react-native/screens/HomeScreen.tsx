@@ -1,18 +1,20 @@
-import React, {useEffect, useRef, useState} from "react";
-import { Image, StyleSheet, View } from "react-native";
 const msc = require("../assets/music/Lobby-Time.mp3");
-
+import React, { useContext, useEffect } from "react";
+import { Image, StyleSheet, View } from "react-native";
+import Constants from "expo-constants";
 import { Wrapper } from "../components/layout/Wrapper";
 import { RootTabScreenProps } from "../types";
-import {Audio, AVPlaybackStatus} from "expo-av"
+import { Audio, AVPlaybackStatus } from "expo-av";
 import GameCard from "../components/HomeScreen/GameCard";
 import GameModeToggleSwitch from "../components/gamemodetoggle";
-import {Sound} from "expo-av/build/Audio/Sound";
-import {PlaySound} from "../utils/PlaySound";
+import { Sound } from "expo-av/build/Audio/Sound";
+import { PlaySound } from "../utils/PlaySound";
+import { CurrentScoreContext } from "../context/currentscore/CurrentScoreContext";
+import asyncStorageService from "../services/asyncStorageService";
 
-const wordleImg = require("../assets/images/homescreen/wordle_logo.png");
-const bhImg = require("../assets/images/homescreen/behindBox_logo.png");
-const gbImg = require("../assets/images/homescreen/gibberish_logo.png");
+const wordleImg = require("../assets/images/homescreen/wordle_logo2.png");
+const bhImg = require("../assets/images/homescreen/behindBox_logo2.png");
+const gbImg = require("../assets/images/homescreen/gibberish_logo2.png");
 const logo = require("../assets/images/homescreen/logo.png");
 
 interface SoundInterface {
@@ -22,40 +24,35 @@ interface SoundInterface {
 }
 
 export const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
-	const styles = StyleSheet.create({
-		container: {
-			display: "flex",
-			backgroundColor: "#EAE8FB",
-			height: "100%",
-			width: "100%",
-			flexDirection: "column",
-			alignItems: "center",
-			justifyContent: "space-evenly",
-		},
-		logo: {
-			alignItems: "center",
-			width: "60%",
-		},
-		cardContainer: {
-			flexDirection: "row",
-			justifyContent: "flex-start",
-			flexWrap: "wrap",
-		},
-	});
+	const { setCurrentScore, setLeaderBoardScores } =
+		useContext(CurrentScoreContext);
 
+	useEffect(() => {
+		const fetchScores = async () => {
+			const response = await asyncStorageService("GET");
+			setLeaderBoardScores(response);
+		};
+		fetchScores();
+	}, []);
 
-
-// music
-	useEffect( () => {
+	// music
+	useEffect(() => {
 		async function playSound() {
-			const sound: SoundInterface = await Audio.Sound.createAsync(require("../assets/music/Fluffing-a-Duck.mp3"), {shouldPlay: true})
+			const sound: SoundInterface = await Audio.Sound.createAsync(
+				require("../assets/music/Fluffing-a-Duck.mp3"),
+				{ shouldPlay: true }
+			);
 			if (sound.playAsync !== undefined) {
-				await sound.playAsync()
+				await sound.playAsync();
 			}
 		}
-		playSound().then(r => console.log(r))
-	}, [])
+		playSound().then((r) => console.log(r));
+	}, []);
 
+	const handlePress = (gameType: "W" | "B" | "G") => {
+		setCurrentScore(0);
+		navigation.navigate("Game", { gameType });
+	};
 
 	return (
 		<Wrapper>
@@ -63,25 +60,32 @@ export const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
 				<Image resizeMode="contain" source={logo} style={styles.logo} />
 				<View style={styles.cardContainer}>
 					<GameCard
+						cardTitle="Random"
+						description="Moro med tilfeldighet"
+						bgcolor="#ffc9c9"
+						onPress={() => handlePress("W")}
+						large={true}
+					/>
+					<GameCard
 						cardTitle="Nordle"
 						imageURL={wordleImg}
-						description="Lær navnene ved å spille wordle 🥳"
+						description="Navn med wordle"
 						bgcolor="#FFD4BE"
-						onPress={() => navigation.navigate("Game", { gameType: "W" })}
+						onPress={() => handlePress("W")}
 					/>
 					<GameCard
 						cardTitle="Behind Box"
 						imageURL={bhImg}
-						description="Hvem gjemmer seg bak boksen? 😱"
+						description="Dekket med bokser"
 						bgcolor="#F9F871"
-						onPress={() => navigation.navigate("Game", { gameType: "B" })}
+						onPress={() => handlePress("B")}
 					/>
 					<GameCard
 						cardTitle="Gibberish"
 						imageURL={gbImg}
-						description="Ranger bokstavene"
+						description="Rangerte bokstaver"
 						bgcolor="lightblue"
-						onPress={() => navigation.navigate("Game", { gameType: "G" })}
+						onPress={() => handlePress("G")}
 					/>
 				</View>
 				<View>
@@ -91,3 +95,24 @@ export const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
 		</Wrapper>
 	);
 };
+
+const styles = StyleSheet.create({
+	container: {
+		display: "flex",
+		height: "100%",
+		width: "100%",
+		flexDirection: "column",
+		alignItems: "center",
+		justifyContent: "space-evenly",
+		paddingTop: Constants.statusBarHeight,
+	},
+	logo: {
+		alignItems: "center",
+		width: "60%",
+	},
+	cardContainer: {
+		flexDirection: "row",
+		justifyContent: "center",
+		flexWrap: "wrap",
+	},
+});

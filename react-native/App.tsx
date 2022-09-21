@@ -1,11 +1,13 @@
-import { StatusBar } from "expo-status-bar";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import GameModeProvider from "./context/GameModeProvider";
+import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 
 import useCachedResources from "./hooks/useCachedResources";
-import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
+import React from 'react';
+import CurrentScoreProvider from './context/currentscore/CurrentScoreProvider';
+import GameProvider from './context/GameProvider';
 
 const theme = {
 	...DefaultTheme,
@@ -14,7 +16,7 @@ const theme = {
 	// Specify custom property in nested object
 	colors: {
 		...DefaultTheme.colors,
-		primary: "#BADA55",
+		primary: "black",
 		
 	},
 };
@@ -27,12 +29,15 @@ export default function App() {
 	} else {
 		return (
 			<PaperProvider theme={theme}>
-				<GameModeProvider>
+				<GameProvider>
+					<CurrentScoreProvider>
+
 					<SafeAreaProvider>
 						<Navigation />
 						<StatusBar />
 					</SafeAreaProvider>
-				</GameModeProvider>
+					</CurrentScoreProvider>
+          		</GameProvider>
 			</PaperProvider>
 		);
 	}

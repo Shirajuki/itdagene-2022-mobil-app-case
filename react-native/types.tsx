@@ -4,7 +4,6 @@ import {
 	NavigatorScreenParams,
 } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Employee } from "./hooks/useFetchEmployees";
 
 declare global {
 	namespace ReactNavigation {
@@ -14,10 +13,6 @@ declare global {
 
 export type RootStackParamList = {
 	Root: NavigatorScreenParams<RootTabParamList> | undefined;
-	Modal: {
-		employee: Employee;
-	};
-	NotFound: undefined;
 	Game: {
 		gameType: "W" | "B" | "G";
 	};
@@ -30,6 +25,8 @@ export type RootTabParamList = {
 	Home: undefined;
 	LeaderBoard: undefined;
 	UserSettings: undefined;
+
+
 };
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
