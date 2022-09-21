@@ -31,16 +31,14 @@ useEffect(() => {
   if(newEmployee){
     setUserInput("");
   
-  if(letterIndex === 0){
-    inputRef.current?.focus();
-  }
     // inputRef.current?.clear();
   }
 }, [newEmployee]);
 
 useEffect(() => {
 // setFocus(letterIndex===size)
-if(letterIndex===size) inputRef.current?.focus()
+if(letterIndex===size && !newEmployee) inputRef.current?.focus()
+else if(letterIndex === 0)inputRef.current?.focus();
 }, [size, letterIndex])
 
 
