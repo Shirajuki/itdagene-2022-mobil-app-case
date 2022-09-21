@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useContext, useEffect, useState } from "react";
+import React, {  ReactElement, useContext, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -22,13 +22,19 @@ import shuffleString from "../util/shuffleString";
 
 let currentNameSize = 10;
 
+
+
+
 export const GibberishScreen = () => {
   const [userInputDict, setUserInputDict] = useState<Map<number, string>>(
-    new Map<number, string>()
+    new Map<number, string>());
+  const [userInputComponents, setUserInputComponents] = useState<Map<number, ReactElement>>(
+      new Map<number, ReactElement>()
   );
   const [currentEmployeeIndex, setCurrentEmployeeIndex] = useState<number>(0);
   const [health, setHealth] = useState<number>(3);
   const [shuffledName, setShuffledName] = useState<string>("");
+  const [focusIndex, setFocusIndex] = useState<number>(0);
   
   const { gameMode, employees, learningArray } = useContext(GameContext);
   const { setCurrentScore } = useContext(CurrentScoreContext);
@@ -40,7 +46,12 @@ export const GibberishScreen = () => {
   const currentEmployee = gameArray?.[currentEmployeeIndex];
   const firstName = parseFirstName(currentEmployee?.name).toUpperCase();
 
+  const [newEployeeInput, setNewEployeeInput] = useState<boolean>(true);
+
+  
+
   function addToUserInputDict(letterIndex: number, letter: string) {
+    setNewEployeeInput(false)
     setUserInputDict(new Map(userInputDict.set(letterIndex, letter)));
   }
 
@@ -49,10 +60,12 @@ export const GibberishScreen = () => {
     for (let i=0; i<userInputDict.size; i++) { 
       nameInput += userInputDict.get(i)
     }
+    setNewEployeeInput(true)
     return nameInput.trim().toUpperCase() === firstName.trim().toUpperCase()
   }}
 
   useEffect(() => {
+    setFocusIndex(userInputDict.size)
     if (userInputDict.size == firstName.length && firstName.length > 0) {
       if (checkIfCorrectAnswer()) {
         //@ts-ignore
@@ -69,13 +82,14 @@ export const GibberishScreen = () => {
         }
       }
       setNextEmployee()
-      setUserInputDict(new Map<number, string>());
+      // setUserInputDict(new Map<number, string>());
     }
   }, [userInputDict]);
 
   useEffect(() => {
     setShuffledName(shuffleString(firstName));
     currentNameSize = firstName.length;
+    setUserInputDict(new Map<number, string>());
   }, [firstName, gameArray]);
 
   const setNextEmployee = () => {
@@ -88,7 +102,23 @@ export const GibberishScreen = () => {
   };
 
 
+  // const createAndSaveInputField = (letterIndex: number): JSX.Element => {
+
+  //   let inputField = <GibberishLetterInput
+  //     letterIndex={letterIndex}
+  //     addToUserInputDict={addToUserInputDict}
+  //     key={letterIndex} currentNameSize={0} />
+
+  //   setUserInputComponents(new Map(userInputComponents.set(letterIndex, inputField)))
+  //   return inputField;
+  // }
+
+
+
   if (!currentEmployee) return <Loading />;
+
+
+
 
   return (
     <View style={{flex: 1}}>
@@ -110,11 +140,12 @@ export const GibberishScreen = () => {
             {firstName.split("").map((letter, index) => {
               return (
                 <GibberishLetterInput
-                  currentNameSize={currentNameSize}
-                  key={firstName + index}
-                  letterIndex={index}
-                  addToUserInputDict={addToUserInputDict}
-                />
+                letterIndex={index}
+                addToUserInputDict={addToUserInputDict}
+                key={index} currentNameSize={0} 
+                size={focusIndex}
+                newEmployee={newEployeeInput}/>
+                
               );
             })}
           </View>
