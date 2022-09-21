@@ -14,6 +14,8 @@ import { Wrapper } from "../components/layout/Wrapper";
 import { GameModeContext } from "../context/GameModeContext";
 import { Employee } from "../hooks/useFetchEmployees";
 import { getStatuses, getStatusesDisplay, CharStatus } from "../lib/statuses";
+import {Audio, AVPlaybackStatus} from "expo-av";
+import {Sound} from "expo-av/build/Audio/Sound";
 
 const testData: Employee[] = [
 	{
@@ -33,6 +35,12 @@ const testData: Employee[] = [
 			"https://itvemployeeimages.blob.core.windows.net/employees/Praveen Kirubaharan.png?sp=r&st=2022-08-15T07:28:13Z&se=2023-01-01T16:28:13Z&spr=https&sv=2021-06-08&sr=c&sig=WShi5DW8MNleTPN0H5bs9vlhbzyabJgG45h0%2FLeNHvM%3D",
 	},
 ];
+
+interface SoundInterface {
+	sound: Sound;
+	status: AVPlaybackStatus;
+	playAsync?: () => Promise<AVPlaybackStatus>;
+}
 
 interface IWordleStats {
 	guesses: string[];
@@ -294,6 +302,16 @@ const WordleScreen = () => {
 			zIndex: 1,
 		},
 	});
+
+	useEffect( () => {
+		async function playSound() {
+			const sound: SoundInterface = await Audio.Sound.createAsync(require("../assets/music/Lobby-Time.mp3"), {shouldPlay: true})
+			if (sound.playAsync !== undefined) {
+				await sound.playAsync()
+			}
+		}
+		playSound().then(r => console.log(r))
+	}, [])
 
 	return (
 		<View>
