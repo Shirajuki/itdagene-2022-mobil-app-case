@@ -1,66 +1,90 @@
-import React, { useEffect } from "react";
-import { Button, Dimensions, FlatList, Image, StyleSheet } from "react-native";
-import GameModeToggleSwitch from "../components/gamemodetoggle";
+import Constants from "expo-constants";
+import React from "react";
+import { Text, View, Dimensions, Image, StyleSheet, ScrollView } from "react-native";
+import { Title } from "react-native-paper";
 import { Wrapper } from "../components/layout/Wrapper";
 
-import { Text, View } from "../components/Themed";
-import { GameModeContext } from "../context/GameModeContext";
-import { Employee, useFetchEmployees } from "../hooks/useFetchEmployees";
-import { GameMode } from "../models/gameStateEnum";
 import { RootTabScreenProps } from "../types";
 
-const IMAGE_WIDTH = Dimensions.get("window").width;
-const IMAGE_HEIGHT = IMAGE_WIDTH * 1.3;
-
+interface IScoreBox {
+	score: number;
+	index: number;
+}
 export const LeaderBoard = ({
 	navigation,
 }: RootTabScreenProps<"LeaderBoard">) => {
-	const employeeResult = useFetchEmployees();
-
-	const renderEmployee = ({ item }: { item: Employee }) => {
+	const ScoreBox = ({ score, index }: IScoreBox) => {
 		return (
-			<View style={{ flexDirection: "column" }}>
-				<Image
-					style={styles.image}
-					key={item.name}
-					source={{ uri: item.image }}
-					resizeMode="cover"
-				/>
-				<Text> {item.gender}</Text>
-
-				<GameModeToggleSwitch />
+			<View style={styles.scorebox}>
+				<Text>
+					{index}. {score} poeng
+				</Text>
 			</View>
 		);
 	};
 
-	const keyExtractor = (employee: Employee) => employee.name;
-
 	return (
 		<Wrapper>
-			{employeeResult.error ? (
-				<Text style={styles.title}>{employeeResult.error}</Text>
-			) : employeeResult.loading ? (
-				<Text style={styles.title}>{"Laster..."}</Text>
-			) : (
-				<FlatList
-					data={employeeResult.employees}
-					horizontal={true}
-					renderItem={renderEmployee}
-					keyExtractor={keyExtractor}
-					snapToInterval={IMAGE_WIDTH}
-				/>
-			)}
+			<View style={styles.title}>
+				<View>
+					<Image
+						style={styles.image}
+						source={{
+							uri: "https://cdn.discordapp.com/attachments/443508931453648907/1021905509181313114/unknown.png",
+						}}
+					/>
+				</View>
+				<Title>Poengtavle</Title>
+			</View>
+
+			<ScrollView>
+				<View style={styles.wrapper}>
+					<ScoreBox score={1} index={1} />
+					<ScoreBox score={2} index={2} />
+					<ScoreBox score={3} index={3} />
+					<ScoreBox score={4} index={4} />
+				</View>
+			</ScrollView>
 		</Wrapper>
 	);
 };
 
 const styles = StyleSheet.create({
-	image: {
-		width: IMAGE_WIDTH,
-		height: IMAGE_HEIGHT,
-	},
 	title: {
+		justifyContent: "center",
+		alignItems: "center",
 		fontSize: 20,
 		fontWeight: "bold",
+		backgroundColor: "#FFF9E9",
+		paddingBottom: 8,
+		marginBottom: 12,
+		paddingTop: Constants.statusBarHeight,
+	},
+	wrapper: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	image: {
+		top: 0,
+		width: Dimensions.get("window").width / 3,
+		height: Dimensions.get("window").width / 3,
+		marginTop: 24,
+		marginBottom: 12,
+	},
+	scorebox: {
+		width: Dimensions.get("window").width * 0.9,
+		backgroundColor: "#fff",
+		padding: 16,
+		margin: 8,
+		borderRadius: 8,
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 3,
+		},
+		shadowOpacity: 0.27,
+		shadowRadius: 4.65,
+		elevation: 6,
 	},
 });

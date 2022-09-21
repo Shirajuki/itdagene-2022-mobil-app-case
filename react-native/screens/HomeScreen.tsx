@@ -1,36 +1,27 @@
-import React, {useEffect, useRef, useState} from "react";
+import React from "react";
 import { Image, StyleSheet, View } from "react-native";
-const msc = require("../assets/music/Lobby-Time.mp3");
-
+import Constants from "expo-constants";
 import { Wrapper } from "../components/layout/Wrapper";
 import { RootTabScreenProps } from "../types";
-import {Audio, AVPlaybackStatus} from "expo-av"
+
 import GameCard from "../components/HomeScreen/GameCard";
 import GameModeToggleSwitch from "../components/gamemodetoggle";
-import {Sound} from "expo-av/build/Audio/Sound";
-import {PlaySound} from "../utils/PlaySound";
 
-const wordleImg = require("../assets/images/homescreen/wordle_logo.png");
-const bhImg = require("../assets/images/homescreen/behindBox_logo.png");
-const gbImg = require("../assets/images/homescreen/gibberish_logo.png");
+const wordleImg = require("../assets/images/homescreen/wordle_logo2.png");
+const bhImg = require("../assets/images/homescreen/behindBox_logo2.png");
+const gbImg = require("../assets/images/homescreen/gibberish_logo2.png");
 const logo = require("../assets/images/homescreen/logo.png");
-
-interface SoundInterface {
-	sound: Sound;
-	status: AVPlaybackStatus;
-	playAsync?: () => Promise<AVPlaybackStatus>;
-}
 
 export const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
 	const styles = StyleSheet.create({
 		container: {
 			display: "flex",
-			backgroundColor: "#EAE8FB",
 			height: "100%",
 			width: "100%",
 			flexDirection: "column",
 			alignItems: "center",
 			justifyContent: "space-evenly",
+			paddingTop: Constants.statusBarHeight,
 		},
 		logo: {
 			alignItems: "center",
@@ -38,24 +29,10 @@ export const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
 		},
 		cardContainer: {
 			flexDirection: "row",
-			justifyContent: "flex-start",
+			justifyContent: "center",
 			flexWrap: "wrap",
 		},
 	});
-
-
-
-// music
-	useEffect( () => {
-		async function playSound() {
-			const sound: SoundInterface = await Audio.Sound.createAsync(require("../assets/music/Fluffing-a-Duck.mp3"), {shouldPlay: true})
-			if (sound.playAsync !== undefined) {
-				await sound.playAsync()
-			}
-		}
-		playSound().then(r => console.log(r))
-	}, [])
-
 
 	return (
 		<Wrapper>
@@ -63,23 +40,30 @@ export const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
 				<Image resizeMode="contain" source={logo} style={styles.logo} />
 				<View style={styles.cardContainer}>
 					<GameCard
+						cardTitle="Random"
+						description="Moro med tilfeldighet"
+						bgcolor="#ffc9c9"
+						onPress={() => navigation.navigate("Game", { gameType: "W" })}
+						large={true}
+					/>
+					<GameCard
 						cardTitle="Nordle"
 						imageURL={wordleImg}
-						description="Lær navnene ved å spille wordle 🥳"
+						description="Navn med wordle"
 						bgcolor="#FFD4BE"
 						onPress={() => navigation.navigate("Game", { gameType: "W" })}
 					/>
 					<GameCard
 						cardTitle="Behind Box"
 						imageURL={bhImg}
-						description="Hvem gjemmer seg bak boksen? 😱"
+						description="Dekket med bokser"
 						bgcolor="#F9F871"
 						onPress={() => navigation.navigate("Game", { gameType: "B" })}
 					/>
 					<GameCard
 						cardTitle="Gibberish"
 						imageURL={gbImg}
-						description="Ranger bokstavene"
+						description="Rangerte bokstaver"
 						bgcolor="lightblue"
 						onPress={() => navigation.navigate("Game", { gameType: "G" })}
 					/>
