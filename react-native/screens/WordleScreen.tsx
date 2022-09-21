@@ -37,12 +37,6 @@ import { GameMode } from "../models/gameStateEnum";
 import { RootStackScreenProps } from "../types";
 import parseFirstName from "../util/parseFirstName";
 
-interface SoundInterface {
-	sound: Sound;
-	status: AVPlaybackStatus;
-	playAsync?: () => Promise<AVPlaybackStatus>;
-}
-
 interface IWordleStats {
 	guesses: string[];
 	name: string;

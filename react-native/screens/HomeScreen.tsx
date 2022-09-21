@@ -23,6 +23,7 @@ interface SoundInterface {
 	sound: Sound;
 	status: AVPlaybackStatus;
 	playAsync?: () => Promise<AVPlaybackStatus>;
+	unloadAsync?: () => Promise<AVPlaybackStatus>;
 }
 
 export const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
@@ -71,6 +72,27 @@ export const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
 		setCurrentScore(0);
 		navigation.navigate("Game", { gameType });
 	};
+
+	const styles = StyleSheet.create({
+		container: {
+			display: "flex",
+			height: "100%",
+			width: "100%",
+			flexDirection: "column",
+			alignItems: "center",
+			justifyContent: "space-evenly",
+			paddingTop: Constants.statusBarHeight,
+		},
+		logo: {
+			alignItems: "center",
+			width: "60%",
+		},
+		cardContainer: {
+			flexDirection: "row",
+			justifyContent: "center",
+			flexWrap: "wrap",
+		},
+	});
 
 	return (
 		<Wrapper>
