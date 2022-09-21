@@ -67,6 +67,7 @@ export const LeaderBoard = ({
 						)
 					)}
 				</View>
+				{leaderBoardScores.length === 0 && (<Text style={{ textAlign: "center",fontSize:25, fontWeight:"300" }}>Du har ikke spilt noe ennå</Text>)}
 			</ScrollView>
 		</Wrapper>
 	);

@@ -34,7 +34,7 @@ export const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
 	useEffect(() => {
 		const fetchScores = async () => {
 			const response = await asyncStorageService("GET");
-			setLeaderBoardScores(response ?? []);
+			setLeaderBoardScores(response || []);
 		};
 		fetchScores();
 	}, []);
